@@ -1,7 +1,10 @@
 module euler
 
-# export (nome da função)
+export euler
 
-# function euler(...)
+function euler()
+
+
+end
 
 end
