@@ -10,15 +10,17 @@ export adam_bashfort. adam_moulton, preditor_corretor
 # a     real, tempo inicial
 # b     real, tempo final
 # N     inteiro, número de passos
-# u     real, condição inicial
 # r     inteiro, número de estágios (r = 2, 3, 4)
-# f     função lado direito do PVI
+# x0    real, condição inicial da primeira variavel
+# y0    real, condição inicial da segunda variavel
+# fx    função lado direito do PVI para a primeira variavel
+# fy    função lado direito do PVI para a segunda variavel
 # ---------------------------------------------------------------------
 
 # Saída:
-# U     solução aproximada de u' = f(t,u)
+# t, X, Y     solução aproximada do sistema linear
 
-function adam_bashfort(f,a::Float64,b::Float64,N::Int64, u::Float64, r::Int64)
+function adam_bashfort(fx,fy,a::Float64,b::Float64,N::Int64, x0::Float64, y0::Float64, r::Int64)
     k = (b-a)/N
     U = zeros(N+5)
     t = zeros(N+5)
@@ -57,15 +59,17 @@ end
 # a     real, tempo inicial
 # b     real, tempo final
 # N     inteiro, número de passos
-# u     real, condição inicial
 # r     inteiro, número de estágios (r = 2, 3)
-# f     função lado direito do PVI
+# x0    real, condição inicial da primeira variavel
+# y0    real, condição inicial da segunda variavel
+# fx    função lado direito do PVI para a primeira variavel
+# fy    função lado direito do PVI para a segunda variavel
 # ---------------------------------------------------------------------
 
 # Saída:
-# U     solução aproximada de u' = f(t,u)
+# t, X, Y     solução aproximada do sistema linear
 
-function adam_moulton(f,a::Float64,b::Float64,N::Int64, u::Float64 , r::Int64)
+function adam_moulton(fx,fy,a::Float64,b::Float64,N::Int64, x0::Float64, y0::Float64, r::Int64)
     k = (b-a)/N
     U = zeros(N+4)
     t = zeros(N+4)
@@ -101,14 +105,16 @@ end
 # a     real, tempo inicial
 # b     real, tempo final
 # N     inteiro, número de passos
-# u     real, condição inicial
-# f     função lado direito do PVI
+# x0    real, condição inicial da primeira variavel
+# y0    real, condição inicial da segunda variavel
+# fx    função lado direito do PVI para a primeira variavel
+# fy    função lado direito do PVI para a segunda variavel
 # ---------------------------------------------------------------------
 
 # Saída:
-# U     solução aproximada de u' = f(t,u)
+# t, X, Y     solução aproximada do sistema linear
 
-function preditor_corretor(f,a::Float64,b::Float64,N::Int64, u::Float64)
+function preditor_corretor(fx,fy,a::Float64,b::Float64,N::Int64, x0::Float64, y0::Float64)
     k = (b-a)/N
     U = zeros(N+2)
     t = zeros(N+2)
