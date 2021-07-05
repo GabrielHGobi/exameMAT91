@@ -17,9 +17,8 @@ using Printf
 using Plots
 
 # Funções para resolução de EDOs
-include("euler.jl")
-include("taylor.jl")
-include("runge_kutta.jl")
+include("passos_simples.jl")
+include("passos_multiplos.jl")
 # include("filename.jl")
 
 # EDO do problema de oscilações elétricas (PVI)
