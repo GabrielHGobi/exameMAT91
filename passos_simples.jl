@@ -10,23 +10,28 @@ export euler, euler_melhorado, runge_kutta_4_ordem. runge_kutta_fehlberg
 # a     real, tempo inicial
 # b     real, tempo final
 # N     inteiro, número de passos
-# u     real, condição inicial
-# f     função lado direito do PVI
+# x0     real, condição inicial da primeira variavel
+# y0     real, condição inicial da segunda variavel
+# fx     função lado direito do PVI para a primeira variavel
+# fy     função lado direito do PVI para a segunda variavel
 # ---------------------------------------------------------------------
 # Saída:
 # U     solução aproximada de u' = f(t,u)
 
-function euler(f,a::Float64,b::Float64,N::Int64,u::Float64)
+function euler(fx, fy,a::Float64,b::Float64,N::Int64,x0::Float64, y0::Float64)
     k = (b-a)/N
-    U = zeros(N+1)
+    X = zeros(N+1)
+    Y = zeros(N+1)
     t = zeros(N+1)
-    U[1] = u
+    X[1] = x0
+    Y[1] = y0
     t[1] = a
     for i = 1:N
-        U[i+1] = U[i] + k*f(t[i],U[i])
+        X[i+1] = X[i] + k*fx(t[i],X[i], Y[i])
+        Y[i+1] = Y[i] + k*fy(t[i],X[i], Y[i])
         t[i+1] = t[i] + k
     end
-    return t,U
+    return t,X,Y
 end
 
 # =====================================================================
