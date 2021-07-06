@@ -1,4 +1,3 @@
-using Plots: push!
 # =========================================================================================
 # *****************************************************************************************
 #             			               MAT-91 2021 - Exame
@@ -15,6 +14,7 @@ using Plots: push!
 # Pacotes de Julia
 using Printf
 using Plots
+using TypedTables
 
 # Métodos para resolução de EDOs
 # include("passos_simples.jl")
@@ -27,24 +27,100 @@ using PassosMultiplos
 R = 1.5 # Valor da resistência em ohm
 L = 12.0 # Valor da indutância em henry
 C = 1.0 # Valor da capacitância em faraday
-V(t) = 10.0*sin(t) # Valor da tensão, dependende do tempo em s, em volt
+V = 1 # Valor da tensão, dependende do tempo em s, em volt
 
 # Tempo de simulação em s
-a, b = [0.0, 100.0]
+a, b = [0.0, 80.0]
 
 # EDO do problema de oscilações elétricas (PVI)
 dQ(t, Q, I) = I
-dI(t, Q, I) = V(t)/L - R/L * I - 1/(L*C) * Q
+dI(t, Q, I) = V/L - R/L * I - 1/(L*C) * Q
 
 # Condições iniciais do PVI
 Q0 = 0.0
 I0 = 0.0
 
+# Solução analítica (para V = cte)
+alpha = R/(2*L) 
+w = sqrt(1/(L*C) - (R/(2*L))^2 ) 
+phi = atan(-alpha/w)
+A = -V*C/cos(phi)
+sol(t) = A*exp(-alpha*t)*cos(w*t+phi) + V*C
+t_analitica = a:0.01:b
+Q_analitica = @. sol(t_analitica)
+
 # Resolução da EDO pelos diferentes métodos e análise
 
+# Por métodos de passo simples
+
 N = 50 # qtde de passos
-t, Q, I = PassosSimples.euler_melhorado(dQ, dI, a, b, N, Q0, I0)
-plot(t, Q)
+
+plt_passos_simples = plot(t_analitica, Q_analitica,
+		title = "Comparação de Métodos de Passo Simples (N = $N)",
+        xlabel = "Tempo (s)",
+        ylabel = "Carga Q no capacitor (C)",
+        lcolor =:black ,
+        ls =:dot,
+        lw =:1.5,
+        legend = :topright,
+		label = "Analítica")
+
+t, Q_euler, I_euler = PassosSimples.euler(dQ, dI, a, b, N, Q0, I0)
+scatter!(t, Q_euler, 
+    markershape = :diamond, 
+    markersize =:3,
+    mcolor = :blue,
+    markerstrokewidth =:0.1,
+    label= "Euler")
+Q_analitica = @. sol(t)
+
+t, Q_euler_melhorado, I_euler_melhorado = PassosSimples.euler_melhorado(dQ, dI, a, b, N, Q0, I0)
+scatter!(t, Q_euler_melhorado, markershape = :circle, 
+    markersize =:3,
+    mcolor = :red,
+    markerstrokewidth =:0.1, 
+    label = "Euler Melhorado")
+
+t, Q_rk4, I_rk4 = PassosSimples.runge_kutta_4_ordem(dQ, dI, a, b, N, Q0, I0)
+scatter!(t, Q_rk4,
+    markershape = :utriangle, 
+    markersize =:4, 
+    mcolor = :purple,
+    markerstrokewidth =:0.1, 
+    label= "RK 4ª ordem")
+
+t_rkf, Q_rkf, I_rkf = PassosSimples.runge_kutta_fehlberg(dQ, dI, a, b, 0.000001, (b-a)/N, 0.01, Q0, I0)
+scatter!(t_rkf, Q_rkf, 
+    markershape = :star,
+    markersize =:3, 
+    mcolor = :yellow,
+    markerstrokewidth =:0.1, 
+    label = "RK Fehlberg")
+
+savefig(plt_passos_simples, "./figures/PassoSimplesN$N")
+
+dif_euler = broadcast(abs,Q_analitica - Q_euler)
+dif_euler_melhorado = broadcast(abs,Q_analitica - Q_euler_melhorado)
+dif_rk4 = broadcast(abs,Q_analitica - Q_rk4)
+
+erros = plot(t, dif_euler, label = "Euler",
+    title = "Erro (N = $N)",
+    xlabel = "Tempo (s)",
+    ylabel = "Erro")
+plot!(t, dif_euler_melhorado, label = "Euler Melhorado")
+plot!(t, dif_rk4, label = "RK 4ª ordem")
+savefig(erros, "./figures/ErrosPassoSimplesN$N")
+
+# Criando tabela para mostrar resultados
+tabelaPassoSimples = Table(Tempo = t,
+                    Analitica = Q_analitica,
+                    Euler = Q_euler,
+                    ErroEuler = dif_euler,
+                    EulerMelhorado = Q_euler_melhorado,
+                    ErroEulerMelhorado = dif_euler_melhorado,
+                    RK4 = Q_rk4,
+                    ErroRK4 = dif_rk4)
+display(tabelaPassoSimples)
 
 
 

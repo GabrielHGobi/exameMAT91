@@ -1,5 +1,7 @@
 module PassosSimples
 
+using LinearAlgebra
+
 export euler, euler_melhorado, runge_kutta_4_ordem, runge_kutta_fehlberg
 
 # =====================================================================
@@ -160,7 +162,7 @@ function runge_kutta_fehlberg(fx, fy, a::Float64,b::Float64,tol::Float64, Kmax::
         F4 = [F4x, F4y]
         F5 = [F5x, F5y]
 
-        R = 1/k*norm(1/360*F0 - 128/4275*F2 - 2197/75240*F3 + 1/50*F4 + 2/55*F5)
+        R = 1/k*LinearAlgebra.norm(1/360*F0 - 128/4275*F2 - 2197/75240*F3 + 1/50*F4 + 2/55*F5)
 
         if R <= tol
             t[i+1] = t[i] + k
