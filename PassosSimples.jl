@@ -1,4 +1,4 @@
-module passos_simples
+module PassosSimples
 
 export euler, euler_melhorado, runge_kutta_4_ordem, runge_kutta_fehlberg
 

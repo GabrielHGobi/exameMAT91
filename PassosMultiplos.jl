@@ -1,4 +1,4 @@
-module passos_multiplos
+module PassosMultiplos
 
 export adam_bashfort, adam_moulton, preditor_corretor
 

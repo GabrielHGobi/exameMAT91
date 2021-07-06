@@ -1,3 +1,4 @@
+using Plots: push!
 # =========================================================================================
 # *****************************************************************************************
 #             			               MAT-91 2021 - Exame
@@ -15,9 +16,12 @@
 using Printf
 using Plots
 
-# Funções para resolução de EDOs
-include("passos_simples.jl")
-include("passos_multiplos.jl")
+# Métodos para resolução de EDOs
+# include("passos_simples.jl")
+# include("passos_multiplos.jl")
+push!(LOAD_PATH, pwd())
+using PassosSimples
+using PassosMultiplos
 
 # Parâmetros do sistema
 R = 1.5 # Valor da resistência em ohm
@@ -38,8 +42,8 @@ I0 = 0.0
 
 # Resolução da EDO pelos diferentes métodos e análise
 
-N = 200 # qtde de passos
-t, Q, I = passos_simples.euler_melhorado(dQ, dI, a, b, N, Q0, I0)
+N = 50 # qtde de passos
+t, Q, I = PassosSimples.euler_melhorado(dQ, dI, a, b, N, Q0, I0)
 plot(t, Q)
 
 
