@@ -1,6 +1,6 @@
 module passos_multiplos
 
-export adam_bashfort. adam_moulton, preditor_corretor
+export adam_bashfort, adam_moulton, preditor_corretor
 
 # =====================================================================
 #                     Métodos de Adams-Bashforth

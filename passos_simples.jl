@@ -1,6 +1,6 @@
 module passos_simples
 
-export euler, euler_melhorado, runge_kutta_4_ordem. runge_kutta_fehlberg
+export euler, euler_melhorado, runge_kutta_4_ordem, runge_kutta_fehlberg
 
 # =====================================================================
 #                         Método de Euler
