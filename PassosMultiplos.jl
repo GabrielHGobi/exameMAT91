@@ -22,9 +22,9 @@ export adam_bashfort, adam_moulton, preditor_corretor
 
 function adam_bashfort(fx,fy,a::Float64,b::Float64,N::Int64, x0::Float64, y0::Float64, r::Int64)
     k = (b-a)/N
-    X = zeros(N+5)
-	Y = zeros(N+5)
-    t = zeros(N+5)
+    X = zeros(N+1)
+	Y = zeros(N+1)
+    t = zeros(N+1)
     X[1] = x0
 	Y[1] = y0
     t[1] = a
@@ -41,7 +41,7 @@ function adam_bashfort(fx,fy,a::Float64,b::Float64,N::Int64, x0::Float64, y0::Fl
 		Y[i+1] = Y[i] + k/6*(F0y+2*F1y+2*F2y+F3y)
 		t[i+1] = t[i] + k
 	end
-	for i = 1:N	
+	for i = 1:N-r+1
 		if r == 2
 			X[i+2] = X[i+1] + k/2*( 3*fx(t[i+1], X[i+1], Y[i+1]) - fx(t[i+1], X[i+1], Y[i+1]))
 			Y[i+2] = Y[i+1] + k/2*( 3*fy(t[i+1], X[i+1], Y[i+1]) - fy(t[i+1], X[i+1], Y[i+1]))
@@ -51,8 +51,8 @@ function adam_bashfort(fx,fy,a::Float64,b::Float64,N::Int64, x0::Float64, y0::Fl
 			Y[i+3] = Y[i+2] + k/12*(23*fy(t[i+2], X[i+2], Y[i+2]) - 16*fy(t[i+1], X[i+1], Y[i+1]) + 5*fy(t[i], X[i], Y[i]))
 			t[i+3] = t[i+2] + k
 		elseif r == 4
-			X[i+4] = X[i+3] + k/4*(55*fx(t[i+3], X[i+3], Y[i+3]) - 59*fx(t[i+2], X[i+2], Y[i+3]) + 37*fx(t[i+1], X[i+1], Y[i+1]) - 9*fx(t[i], X[i], Y[i]))
-			Y[i+4] = Y[i+3] + k/4*(55*fy(t[i+3], X[i+3], Y[i+3]) - 59*fy(t[i+2], X[i+2], Y[i+3]) + 37*fy(t[i+1], X[i+1], Y[i+1]) - 9*fy(t[i], X[i], Y[i]))
+			X[i+4] = X[i+3] + k/24*(55*fx(t[i+3], X[i+3], Y[i+3]) - 59*fx(t[i+2], X[i+2], Y[i+2]) + 37*fx(t[i+1], X[i+1], Y[i+1]) - 9*fx(t[i], X[i], Y[i]))
+			Y[i+4] = Y[i+3] + k/24*(55*fy(t[i+3], X[i+3], Y[i+3]) - 59*fy(t[i+2], X[i+2], Y[i+2]) + 37*fy(t[i+1], X[i+1], Y[i+1]) - 9*fy(t[i], X[i], Y[i]))
 			t[i+4] = t[i+3] + k
 		else
 			error("r invalido para o Método de Adams-Bashforth")

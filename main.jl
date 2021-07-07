@@ -17,8 +17,6 @@ using Plots
 using TypedTables
 
 # Métodos para resolução de EDOs
-# include("passos_simples.jl")
-# include("passos_multiplos.jl")
 push!(LOAD_PATH, pwd())
 using PassosSimples
 using PassosMultiplos
@@ -49,8 +47,14 @@ sol(t) = A*exp(-alpha*t)*cos(w*t+phi) + V*C
 t_analitica = a:0.01:b
 Q_analitica = @. sol(t_analitica)
 
+
+
+
 # Resolução da EDO pelos diferentes métodos e análise
 
+
+
+# ============================================================================
 # Por métodos de passo simples
 
 N = 50 # qtde de passos
@@ -121,6 +125,50 @@ tabelaPassoSimples = Table(Tempo = t,
                     RK4 = Q_rk4,
                     ErroRK4 = dif_rk4)
 display(tabelaPassoSimples)
+
+# ============================================================================
+# Por métodos de passos múltiplos
+
+Q_analitica = @. sol(t_analitica)
+
+N = 80 # qtde de passos
+
+plt_adam_b = plot(t_analitica, Q_analitica,
+		title = "Comparação de estágios de Adam-Bashforth (N = $N)",
+        xlabel = "Tempo (s)",
+        ylabel = "Carga Q no capacitor (C)",
+        lcolor =:black ,
+        ls =:dot,
+        lw =:1.5,
+        legend = :topright,
+		label = "Analítica")
+
+t, Q_adam_b_2, I_adam_b_2 = PassosMultiplos.adam_bashfort(dQ, dI, a, b, N, Q0, I0, 2)
+scatter!(t, Q_adam_b_2, 
+    markershape = :diamond, 
+    markersize =:3,
+    mcolor = :blue,
+    markerstrokewidth =:0.1,
+    label= "r = 2")
+Q_analitica = @. sol(t)
+
+t, Q_adam_b_3, I_adam_b_3 = PassosMultiplos.adam_bashfort(dQ, dI, a, b, N, Q0, I0, 3)
+scatter!(t, Q_adam_b_3, 
+    markershape = :circle, 
+    markersize =:3,
+    mcolor = :red,
+    markerstrokewidth =:0.1,
+    label= "r = 3")
+
+t, Q_adam_b_4, I_adam_b_4 = PassosMultiplos.adam_bashfort(dQ, dI, a, b, N, Q0, I0, 4)
+scatter!(t, Q_adam_b_4, 
+    markershape = :utriangle, 
+    markersize =:3,
+    mcolor = :purple,
+    markerstrokewidth =:0.1,
+    label= "r = 4")    
+    
+# display(plt_adam_b)
 
 
 
