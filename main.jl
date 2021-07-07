@@ -1,3 +1,4 @@
+using Plots: display
 # =========================================================================================
 # *****************************************************************************************
 #             			               MAT-91 2021 - Exame
@@ -131,7 +132,7 @@ display(tabelaPassoSimples)
 
 Q_analitica = @. sol(t_analitica)
 
-N = 100 # qtde de passos
+N = 200 # qtde de passos
 
 plt_adam_b = plot(t_analitica, Q_analitica,
 		title = "Comparação de estágios de Adam-Bashforth (N = $N)",
@@ -168,7 +169,7 @@ scatter!(t, Q_adam_b_4,
     markerstrokewidth =:0.1,
     label= "r = 4")    
     
-display(plt_adam_b)
+savefig(erros, "./figures/PassoMultiploAdamBashforthN$N")
 
 
 
@@ -200,7 +201,7 @@ scatter!(t, Q_adam_m_3,
     markerstrokewidth =:0.1,
     label= "r = 3")
 
-display(plt_adam_m)
+savefig(erros, "./figures/PassoMultiploAdamMoultonN$N")
 
 
 # ==============================================
@@ -240,8 +241,31 @@ scatter!(t, Q_preditor_corretor,
     mcolor = :purple,
     markerstrokewidth =:0.1, 
     label= "Preditor-Corretor")
+savefig(erros, "./figures/PassoMultiploN$N")
 
-display(plt_passos_multiplos)
+
+dif_adam_b = broadcast(abs,Q_analitica - Q_adam_b_4)
+dif_adam_m = broadcast(abs,Q_analitica - Q_adam_m_3)
+dif_preditor_corretor = broadcast(abs,Q_analitica - Q_preditor_corretor)
+
+erros = plot(t, dif_adam_b, label = "Adam-Bashforth",
+    title = "Erro (N = $N)",
+    xlabel = "Tempo (s)",
+    ylabel = "Erro")
+plot!(t, dif_adam_m, label = "Adam-Moulton")
+plot!(t, dif_preditor_corretor, label = "Preditor-Corretor")
+savefig(erros, "./figures/ErrosPassoMultiploN$N")
+
+# Criando tabela para mostrar resultados
+tabelaPassoMultiplo = Table(Tempo = t,
+                        Analitica = Q_analitica,
+                        AdamBashforth = Q_adam_b_4,
+                        ErroAdamB = dif_adam_b,
+                        AdamMoulton = Q_adam_m_3,
+                        ErroAdamM = dif_adam_m,
+                        PreditorCorretor = Q_preditor_corretor,
+                        ErroPreditorCorretor = dif_preditor_corretor)
+display(tabelaPassoMultiplo)
 
 
 
