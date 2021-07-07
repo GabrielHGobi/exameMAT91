@@ -131,7 +131,7 @@ display(tabelaPassoSimples)
 
 Q_analitica = @. sol(t_analitica)
 
-N = 80 # qtde de passos
+N = 100 # qtde de passos
 
 plt_adam_b = plot(t_analitica, Q_analitica,
 		title = "Comparação de estágios de Adam-Bashforth (N = $N)",
@@ -168,7 +168,81 @@ scatter!(t, Q_adam_b_4,
     markerstrokewidth =:0.1,
     label= "r = 4")    
     
-# display(plt_adam_b)
+display(plt_adam_b)
+
+
+
+Q_analitica = @. sol(t_analitica)
+plt_adam_m = plot(t_analitica, Q_analitica,
+		title = "Comparação de estágios de Adam-Moulton (N = $N)",
+        xlabel = "Tempo (s)",
+        ylabel = "Carga Q no capacitor (C)",
+        lcolor =:black ,
+        ls =:dot,
+        lw =:1.5,
+        legend = :topright,
+		label = "Analítica")
+
+t, Q_adam_m_2, I_adam_m_2 = PassosMultiplos.adam_moulton(dQ, dI, a, b, N, Q0, I0, 2)
+scatter!(t, Q_adam_m_2, 
+    markershape = :diamond, 
+    markersize =:3,
+    mcolor = :blue,
+    markerstrokewidth =:0.1,
+    label= "r = 2")
+Q_analitica = @. sol(t)
+
+t, Q_adam_m_3, I_adam_m_3 = PassosMultiplos.adam_moulton(dQ, dI, a, b, N, Q0, I0, 3)
+scatter!(t, Q_adam_m_3, 
+    markershape = :circle, 
+    markersize =:3,
+    mcolor = :red,
+    markerstrokewidth =:0.1,
+    label= "r = 3")
+
+display(plt_adam_m)
+
+
+# ==============================================
+
+Q_analitica = @. sol(t_analitica)
+plt_passos_multiplos = plot(t_analitica, Q_analitica,
+		title = "Comparação de Métodos de Passos Múltiplos (N = $N)",
+        xlabel = "Tempo (s)",
+        ylabel = "Carga Q no capacitor (C)",
+        lcolor =:black ,
+        ls =:dot,
+        lw =:1.5,
+        legend = :topright,
+		label = "Analítica")
+
+t, Q_adam_b_4, I_adam_b_4 = PassosMultiplos.adam_bashfort(dQ, dI, a, b, N, Q0, I0, 4)
+scatter!(t, Q_adam_b_4, 
+    markershape = :diamond, 
+    markersize =:3,
+    mcolor = :blue,
+    markerstrokewidth =:0.1,
+    label= "Adam-Bashforth (r=4)")
+Q_analitica = @. sol(t)
+
+t, Q_adam_m_3, I_adam_m_3 = PassosMultiplos.adam_moulton(dQ, dI, a, b, N, Q0, I0, 3)
+scatter!(t, Q_adam_m_3, 
+    markershape = :circle, 
+    markersize =:3,
+    mcolor = :red,
+    markerstrokewidth =:0.1, 
+    label = "Adam-Moulton (r=3)")
+
+t, Q_preditor_corretor, I_preditor_corretor = PassosMultiplos.preditor_corretor(dQ, dI, a, b, N, Q0, I0)
+scatter!(t, Q_preditor_corretor,
+    markershape = :utriangle, 
+    markersize =:4, 
+    mcolor = :purple,
+    markerstrokewidth =:0.1, 
+    label= "Preditor-Corretor")
+
+display(plt_passos_multiplos)
+
 
 
 
