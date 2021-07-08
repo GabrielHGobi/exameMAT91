@@ -269,4 +269,43 @@ display(tabelaPassoMultiplo)
 
 
 
+# ===============================================================
+
+
+
+Q_analitica = @. sol(t_analitica)
+
+N = 25 # qtde de passos
+
+plt_final = plot(t_analitica, Q_analitica,
+		title = "Comparação final (N = $N)",
+        xlabel = "Tempo (s)",
+        ylabel = "Carga Q no capacitor (C)",
+        lcolor =:black ,
+        ls =:dot,
+        lw =:1.5,
+        legend = :topright,
+		label = "Analítica")
+
+
+t_rkf, Q_rkf, I_rkf = PassosSimples.runge_kutta_fehlberg(dQ, dI, a, b, 100.0, (b-a)/N, 0.00001, Q0, I0)
+scatter!(t_rkf, Q_rkf, 
+    markershape = :diamond,
+    markersize =:3, 
+    mcolor = :blue,
+    markerstrokewidth =:0.1, 
+    label = "RK Fehlberg")
+Q_analitica = @. sol(t)
+
+println(length(Q_rkf))
+
+t, Q_preditor_corretor, I_preditor_corretor = PassosMultiplos.preditor_corretor(dQ, dI, a, b, N, Q0, I0)
+scatter!(t, Q_preditor_corretor,
+    markershape = :circle, 
+    markersize =:4, 
+    mcolor = :red,
+    markerstrokewidth =:0.1, 
+    label= "Preditor-Corretor")
+
+savefig(plt_final, "./figures/FinalN$N")
 
