@@ -132,7 +132,7 @@ display(tabelaPassoSimples)
 
 Q_analitica = @. sol(t_analitica)
 
-N = 200 # qtde de passos
+N = 50 # qtde de passos
 
 plt_adam_b = plot(t_analitica, Q_analitica,
 		title = "Comparação de estágios de Adam-Bashforth (N = $N)",
@@ -169,7 +169,7 @@ scatter!(t, Q_adam_b_4,
     markerstrokewidth =:0.1,
     label= "r = 4")    
     
-savefig(erros, "./figures/PassoMultiploAdamBashforthN$N")
+savefig(plt_adam_b, "./figures/PassoMultiploAdamBashforthN$N")
 
 
 
@@ -201,7 +201,7 @@ scatter!(t, Q_adam_m_3,
     markerstrokewidth =:0.1,
     label= "r = 3")
 
-savefig(erros, "./figures/PassoMultiploAdamMoultonN$N")
+savefig(plt_adam_m, "./figures/PassoMultiploAdamMoultonN$N")
 
 
 # ==============================================
@@ -241,7 +241,7 @@ scatter!(t, Q_preditor_corretor,
     mcolor = :purple,
     markerstrokewidth =:0.1, 
     label= "Preditor-Corretor")
-savefig(erros, "./figures/PassoMultiploN$N")
+savefig(plt_passos_multiplos, "./figures/PassoMultiploN$N")
 
 
 dif_adam_b = broadcast(abs,Q_analitica - Q_adam_b_4)
