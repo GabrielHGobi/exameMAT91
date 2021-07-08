@@ -1,3 +1,4 @@
+using Core: println
 using Plots: display
 # =========================================================================================
 # *****************************************************************************************
@@ -287,7 +288,6 @@ plt_final = plot(t_analitica, Q_analitica,
         legend = :topright,
 		label = "Analítica")
 
-
 t_rkf, Q_rkf, I_rkf = PassosSimples.runge_kutta_fehlberg(dQ, dI, a, b, 100.0, (b-a)/N, 0.00001, Q0, I0)
 scatter!(t_rkf, Q_rkf, 
     markershape = :diamond,
@@ -295,7 +295,7 @@ scatter!(t_rkf, Q_rkf,
     mcolor = :blue,
     markerstrokewidth =:0.1, 
     label = "RK Fehlberg")
-Q_analitica = @. sol(t)
+Q_analitica = @. sol(t_rkf)
 
 println(length(Q_rkf))
 
@@ -309,3 +309,21 @@ scatter!(t, Q_preditor_corretor,
 
 savefig(plt_final, "./figures/FinalN$N")
 
+dif_rkf = broadcast(abs,Q_analitica - Q_rkf)
+dif_preditor_corretor = broadcast(abs,Q_analitica - Q_preditor_corretor)
+
+
+erro_relativo_rkf = ones(length(dif_rkf))
+erro_relativo_preditor_corretor = ones(length(dif_rkf))
+erro_relativo_rkf[1] = 0
+erro_relativo_preditor_corretor[1] = 0
+for i = 2:length(dif_rkf)
+    erro_relativo_rkf[i] = dif_rkf[i]/Q_analitica[i]
+    erro_relativo_preditor_corretor[i] = dif_preditor_corretor[i]/Q_analitica[i]
+end
+
+display(erro_relativo_rkf)
+
+
+println(maximum(erro_relativo_rkf))
+println(maximum(erro_relativo_preditor_corretor))
